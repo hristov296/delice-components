@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf dist",
     "watch": "webpack --watch --output-public-path https://delice.bg/wp-content/plugins/react-components/dist/",
     "dev": "webpack --output-public-path https://delice.bg/wp-content/plugins/react-components/dist/",
     "build": "webpack",
@@ -14,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@emotion/core": "^10.0.28",
     "classnames": "^2.2.6",
     "lodash": "^4.17.15",
     "react": "^16.13.1",

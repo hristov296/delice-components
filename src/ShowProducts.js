@@ -8,7 +8,7 @@ function ShowProducts(props) {
   const { product_link } = shortcodes;
 
   const content = cats ? cats[0].products : products;
-  console.log(props);
+  // console.log(props);
 
   return (
     <div className={classnames("show_products", { present: attr && attr.presentational })}>

@@ -25,6 +25,7 @@ class ReactElements {
 		add_shortcode( 'sscatre', array($this, 'sc_cat_re') );
 		add_shortcode( 'ssproducts', array($this, 'sc_show_products') );
 		add_shortcode( 'ss_canvas_logos', array($this, 'ss_logos_canvas'));
+		add_shortcode( 'delice_calculator', array($this, 'ss_delice_calculator') );
 
 		add_action( 'ss_single_product_render', array( $this, 'single_prod_render'), 10);
 
@@ -37,6 +38,11 @@ class ReactElements {
 		if (is_product()) {
 			// var_dump(wp_enqueue_scripts('contactform7', plugins_url().'/contact-form-7/includes/js/scripts.js', array('jquery','react-elements'), '',true));
 		}
+	}
+
+	function generate_name($prefix) {
+		$chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		return $prefix.substr(str_shuffle($chars), 0, 10);
 	}
 
 	function single_prod_render() {
@@ -174,6 +180,16 @@ class ReactElements {
 		return '<div class="delice-partners"></div>';
 	}
 
+	function ss_delice_calculator() {
+		$re_data;
+		$el_id = $this->generate_name('re_calc_');
+
+		// wp_localize_script( 'react-elements', 're_sp_data', $gen_data );
+		wp_localize_script( 'react-elements', $el_id, $re_data );
+
+		return '<div id="'.$el_id.'" class="react-element-renomatic-calculator"></div>';
+	}
+
 	function sc_show_products($attr) {
 		$attr = shortcode_atts(array(
 			'ssprodids' => '',
@@ -183,9 +199,7 @@ class ReactElements {
 		),$attr);
 		
 		$re_data;
-		$chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-		$el_id = 're_sp_'.substr(str_shuffle($chars), 0, 10);
-		
+		$el_id = $this->generate_name('re_sp_');		
 		
 		$gen_data['shortcodes'] = array(
 			'product_link' => do_shortcode('[ss_button style="4"]'),
@@ -217,9 +231,7 @@ class ReactElements {
 		),$attr);
 
 		$catids = explode(',', $attr['catids']);
-		$chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-		$el_id = 're_cc_'.substr(str_shuffle($chars), 0, 10);
+		$el_id = $this->generate_name('re_cc_');
 
 		$gen_data['shortcodes'] = array(
 			'product_link' => do_shortcode('[ss_button style="4"]'),
@@ -240,6 +252,17 @@ class ReactElements {
 	}
 
 	function vc_map_custom_elements() {
+		vc_map( array(
+			'name' => 'Delice Renomatic Calculator',
+			'base' => 'delice_calculator',
+			'icon' => 'icon-heart',
+			'group' => 'SS',
+			'category' => 'SS',
+			'params' => array(
+
+			)
+		));
+
 		vc_map(array(
 			'name' => 'Delice Categories Carousel',
 			'base' => 'sscatre',
