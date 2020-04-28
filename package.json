@@ -2,14 +2,13 @@
   "name": "delice-components",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "webpack.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rm -rf dist",
-    "watch": "webpack --watch --output-public-path https://delice.bg/wp-content/plugins/react-components/dist/",
-    "dev": "webpack --output-public-path https://delice.bg/wp-content/plugins/react-components/dist/",
-    "build": "webpack",
-    "prod-watch": "webpack --watch"
+    "watch": "webpack --env dev --watch --progress --profile --colors",
+    "build": "webpack --env prod --progress --profile --colors",
+    "upload": "rsync -avz --prune-empty-dirs --include=\"*/\" --include=\"*.php\" --include=\"/dist/*\" --exclude=\"*\" . delicebg@delice:/home/delicebg/public_html/wp-content/plugins/react-components/"
   },
   "keywords": [],
   "author": "",
@@ -38,5 +37,15 @@
     "style-loader": "^1.0.0",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ],
+    "plugins": [
+      "@babel/plugin-syntax-dynamic-import",
+      "@babel/plugin-proposal-class-properties"
+    ]
   }
 }

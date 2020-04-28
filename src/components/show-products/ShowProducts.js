@@ -1,7 +1,7 @@
 import React from "react";
 import classnames from "classnames";
 
-import ProductBox from "./view/ProductBox";
+import ProductBox from "../../view/ProductBox";
 
 function ShowProducts(props) {
   const { cats, shortcodes, products, attr } = props;

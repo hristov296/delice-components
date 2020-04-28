@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import classnames from "classnames";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 
-import { useWindowWidth } from "./state/windowWidth";
+import { useWindowWidth } from "../../state/windowWidth";
 
 // const Carousel = React.lazy(() =>
 //   import(/* webpackChunkName: 'CarouselThumbnails' */ "./state/Carousel")
 // );
 
-import Svg from "./view/Svg";
-import ProductBox from "./view/ProductBox";
+import Svg from "../../view/Svg";
+import ProductBox from "../../view/ProductBox";
 
 function CatCarousel(props) {
   const [active, setActive] = useState(0);
@@ -53,7 +53,7 @@ function CatCarousel(props) {
           <div className="right-section right-fl">
             <TransitionGroup component={null}>
               <CSSTransition key={active} timeout={300} classNames="fade">
-                {<p class="cat-description">{content[active].desc}</p>}
+                <p className="cat-description">{content[active].desc}</p>
               </CSSTransition>
             </TransitionGroup>
           </div>

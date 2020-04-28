@@ -64,7 +64,7 @@ class Carousel extends Component {
     this.absCenter = this.contSize / 2;
   };
 
-  setSlide = i => {
+  setSlide = (i) => {
     if (i === null) {
       this.setState({
         currentSlide: i,
@@ -96,7 +96,7 @@ class Carousel extends Component {
     this.setSlide(i);
   };
 
-  handleGestureStart = e => {
+  handleGestureStart = (e) => {
     e.preventDefault();
 
     if (e.touches && e.touches.length > 1) {
@@ -119,7 +119,7 @@ class Carousel extends Component {
     this.setState({ initialTranslate: this.state.translate, didMove: false });
   };
 
-  getGesturePointFromEvent = e => {
+  getGesturePointFromEvent = (e) => {
     var point = {};
 
     if (e.targetTouches) {
@@ -135,7 +135,7 @@ class Carousel extends Component {
     return point;
   };
 
-  handleGestureMove = e => {
+  handleGestureMove = (e) => {
     e.preventDefault();
 
     if (!this.initialTouchPos) {
@@ -163,7 +163,7 @@ class Carousel extends Component {
     }
   };
 
-  handleGestureEnd = e => {
+  handleGestureEnd = (e) => {
     e.preventDefault();
 
     if (e.touches && e.touches.length > 0) {
@@ -231,7 +231,7 @@ class Carousel extends Component {
             className={classnames("thumb-nav", {
               disabled: currentSlide === 0 || currentSlide === null,
             })}
-            onClick={e => {
+            onClick={(e) => {
               currentSlide > 0 && this.handleThumbClick(e, currentSlide - 1, true);
             }}>
             {direction === "horizontal" ? <Svg icon="ch-left" /> : <Svg icon="ch-up" />}
@@ -242,8 +242,9 @@ class Carousel extends Component {
                 ? thumbImgs
                 : thumbImgs.map((el, i) => (
                     <a
+                      key={i}
                       href="#"
-                      onClick={e => {
+                      onClick={(e) => {
                         this.handleThumbClick(e, i);
                       }}
                       className={classnames({ current: currentSlide === i })}>
@@ -263,7 +264,7 @@ class Carousel extends Component {
             className={classnames("thumb-nav", {
               disabled: currentSlide === this.totalItems - 1 || currentSlide === null,
             })}
-            onClick={e => {
+            onClick={(e) => {
               currentSlide < this.totalItems - 1 && this.handleThumbClick(e, currentSlide + 1, true);
             }}>
             {direction === "horizontal" ? <Svg icon="ch-right" /> : <Svg icon="ch-down" />}

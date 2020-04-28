@@ -3,22 +3,22 @@ import React, { Component } from "react";
 import classnames from "classnames";
 
 const VariableProductGallery = React.lazy(() =>
-  import(/* webpackChunkName: 'VariableProductGallery' */ "./state/VariableProductGallery")
+  import(/* webpackChunkName: 'VariableProductGallery' */ "../../state/VariableProductGallery")
 );
 const SimpleProductGallery = React.lazy(() =>
-  import(/* webpackChunkName: 'SimpleProductGallery' */ "./state/SimpleProductGallery")
+  import(/* webpackChunkName: 'SimpleProductGallery' */ "../../state/SimpleProductGallery")
 );
 const ProductTabs = React.lazy(() =>
-  import(/* webpackChunkName: 'ProductTabs' */ "./state/ProductTabs")
+  import(/* webpackChunkName: 'ProductTabs' */ "../../state/ProductTabs")
 );
 const ProductRelated = React.lazy(() =>
-  import(/* webpackChunkName: 'ProductRelated' */ "./view/ProductRelated")
+  import(/* webpackChunkName: 'ProductRelated' */ "../../view/ProductRelated")
 );
 const VariableAttributes = React.lazy(() =>
-  import(/* webpackChunkName: 'VariableAttributes' */ "./state/VariableAttributes")
+  import(/* webpackChunkName: 'VariableAttributes' */ "../../state/VariableAttributes")
 );
 
-import Svg from "./view/Svg";
+import Svg from "../../view/Svg";
 
 class SingleProduct extends Component {
   constructor(props) {
@@ -42,7 +42,7 @@ class SingleProduct extends Component {
     this.props.data.attr_data && this.onClickAttr(null, null);
     window.addEventListener("resize", this.updateDimensions);
 
-    window.wpcf7.supportHtml5 = (function() {
+    window.wpcf7.supportHtml5 = (function () {
       var features = {};
       var input = document.createElement("input");
 
@@ -50,7 +50,7 @@ class SingleProduct extends Component {
 
       var inputTypes = ["email", "url", "tel", "number", "range", "date"];
 
-      window.jQuery.each(inputTypes, function(index, value) {
+      window.jQuery.each(inputTypes, function (index, value) {
         input.setAttribute("type", value);
         features[value] = input.type !== "text";
       });
@@ -58,7 +58,7 @@ class SingleProduct extends Component {
       return features;
     })();
 
-    window.jQuery("div.wpcf7 > form").each(function() {
+    window.jQuery("div.wpcf7 > form").each(function () {
       var $form = window.jQuery(this);
 
       window.wpcf7.initForm($form);
@@ -75,11 +75,11 @@ class SingleProduct extends Component {
       width: window.innerWidth,
     });
   };
-  calcPossibleCol = surf => {
+  calcPossibleCol = (surf) => {
     return Object.keys(this.props.data.attr_data.pa_surface[surf].combinations);
   };
 
-  calcPossibleSurf = col => {
+  calcPossibleSurf = (col) => {
     return Object.keys(this.props.data.attr_data.pa_color[col].combinations);
   };
 
@@ -145,15 +145,15 @@ class SingleProduct extends Component {
     const thumbImgs =
       data.type === "simple"
         ? new Array(data.thumbnail).concat(data.main_gallery)
-        : Object.values(data.attr_data ? data.attr_data.pa_color : {}).map(el => ({
+        : Object.values(data.attr_data ? data.attr_data.pa_color : {}).map((el) => ({
             src: el.image_full[0],
             w: el.image_full[1],
             h: el.image_full[2],
             title: el.name,
           }));
 
-    let prodFeatures = Object.entries(data.pa_features || {}).map(el => (
-      <div className="feature-item">
+    let prodFeatures = Object.entries(data.pa_features || {}).map((el, i) => (
+      <div key={i} className="feature-item">
         <span className="feat-tooltip">{el[1]}</span>
         <Svg icon={el[0]} class="feat-icon" />
       </div>
@@ -161,7 +161,7 @@ class SingleProduct extends Component {
     const totalFeatures = prodFeatures.length;
     prodFeatures = prodFeatures.reduce((res, val, i) => {
       if (i < prodFeatures.length - 1) {
-        res.push(val, <span className="feat-item-sep" />);
+        res.push(val, <span key={`sep-${i}`} className="feat-item-sep" />);
       } else {
         res.push(val);
       }
@@ -251,13 +251,33 @@ class SingleProduct extends Component {
                 </div>
               )}
             </React.Suspense>
-            <div className="product-cf" dangerouslySetInnerHTML={{ __html: data.cf7 }} />
+            {data.link_to_calc ? (
+              <div className="lines-title flex items-center">
+                <Svg icon="lines" class="d-lines" />
+                <p
+                  className="fw-medium tag-title mob-fs-20"
+                  style={{ fontSize: "18px", lineHeight: "1.3" }}>
+                  За този модел врата имаме разработен калкулатор за цена. Ако желаете да пресметнете
+                  тази цена, кликнете на бутона "Към калкулатор".
+                </p>
+              </div>
+            ) : (
+              <div className="product-cf" dangerouslySetInnerHTML={{ __html: data.cf7 }} />
+            )}
           </div>
+          {data.calculator_link ? (
+            <div
+              style={{ position: "absolute", top: "calc(100% + 10px)", right: "20px" }}
+              dangerouslySetInnerHTML={{ __html: data.calculator_link }}
+            />
+          ) : (
+            ""
+          )}
         </div>
 
         {totalFeatures && width > 1200 ? (
           <div className="product-features container" style={{ "--total-features": totalFeatures }}>
-            <div class="prod-feat-wrap">{prodFeatures}</div>
+            <div className="prod-feat-wrap">{prodFeatures}</div>
           </div>
         ) : (
           ""

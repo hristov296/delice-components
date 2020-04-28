@@ -1,6 +1,10 @@
+module.exports = (env) => {
+  return require(`./webpack.${env}.js`);
+};
+
 const path = require("path");
 
-module.exports = {
+const old = {
   entry: {
     index: "./src/index.js",
   },

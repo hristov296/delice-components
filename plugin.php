@@ -21,6 +21,14 @@ class ReactElements {
 			vc_add_shortcode_param( 'select_categories', array($this, 'select_categories_type_cb') );
 
 		}
+		
+		add_action( 'rest_api_init', function () {
+			register_rest_route( 'rcv2/v1', '/sendmail', array(
+				'methods' => 'POST',
+				'callback' => array($this, 'receiving_mail'),
+			) );
+		} );
+
 		add_action( 'vc_before_init', array( $this, 'vc_map_custom_elements') );
 		add_shortcode( 'sscatre', array($this, 'sc_cat_re') );
 		add_shortcode( 'ssproducts', array($this, 'sc_show_products') );
@@ -33,19 +41,107 @@ class ReactElements {
 	}
 
 	function add_script_tags(){
-		wp_enqueue_script( 'react-elements' , plugins_url( 'dist/index.bundle.js',  __FILE__ ), array(), '', true);
-		wp_localize_script( 'react-elements', 're_preload', array('url' => get_template_directory_uri().'/dist/img/preload.png'));
-		if (is_product()) {
-			// var_dump(wp_enqueue_scripts('contactform7', plugins_url().'/contact-form-7/includes/js/scripts.js', array('jquery','react-elements'), '',true));
-		}
+		$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
+		wp_register_script( 'react', 'https://unpkg.com/react@16/umd/react.production.min.js', array(), '', true);
+		wp_register_script( 'react-dom', 'https://unpkg.com/react-dom@16/umd/react-dom.production.min.js', array(), '', true);
+		wp_register_script( 'react-commons' , plugins_url( 'dist/commons.delice-react'.$suffix.'.js',  __FILE__ ), array(), '', true);
+
+		wp_register_script( 'show-products' , plugins_url( 'dist/show-products.delice-react'.$suffix.'.js',  __FILE__ ), array('react','react-dom','react-commons'), '', true);
+		wp_register_script( 'cat-carousel' , plugins_url( 'dist/cat-carousel.delice-react'.$suffix.'.js',  __FILE__ ), array('react','react-dom','react-commons'), '', true);
+		wp_register_script( 'single-product' , plugins_url( 'dist/single-product.delice-react'.$suffix.'.js',  __FILE__ ), array('react','react-dom','react-commons'), '', true);
+		wp_register_script( 'calculator' , plugins_url( 'dist/calculator.delice-react'.$suffix.'.js',  __FILE__ ), array('react','react-dom','react-commons'), '', true);
+		
+		wp_localize_script( 'react-commons', 're_preload', array('url' => get_template_directory_uri().'/dist/img/preload.png'));
 	}
 
+	function receiving_mail($data) {
+		// error_log(print_r($data->get_params(),true));
+		$params = $data->get_params();
+	
+		$subject = 'Ново запитване за RenoMatic 2020';
+		$headers = array(
+			'Content-Type: text/html; charset=UTF-8',
+			'From: Delice.BG <webmaster@delice.bg>',
+			'Reply-To: '.$params['form-name'].' <'.$params['form-email'].'>'
+		);
+	
+		$body = '
+		Име: '.$params["form-name"].'<br/>
+		Град: '.$params["form-city"].'<br/>
+		Телефон: '.$params["form-phone"].'<br/>
+		Имейл: '.$params["form-email"].'<br/><br/>
+		
+		Съобщение: '.$params["form-message"].'<br/><br/>
+	
+		-------------------- <br/><br/>
+	
+		Дизайн: '.$params["lines"].'<br/>
+		Цвят: '.$params["color"].'<br/><br/>
+	
+		Аварийно отваряне: '.$params["opening"].'<br/>
+		Допълнително дистанционно: '.$params["remote"].'<br/><br/>
+	
+		Мерки:<br/>
+		- A: '.$params["measure-a"].' см.<br/>
+		- B: '.$params["measure-b"].' см.<br/>
+		- C: '.$params["measure-c"].' см.<br/>
+		- D: '.$params["measure-d"].' см.<br/>
+		- E: '.$params["measure-e"].' см.<br/>
+		- F: '.$params["measure-f"].' см.<br/><br/>
+	
+		Избран модел: '.$params["model"]; 
+		
+		if ($params['horCut']){
+			$body .= ' + прерязване по широчина';
+		}
+		
+		if ($params['verCut']){
+			$body .= ' + прерязване по височина';
+		}
+		
+		$body .= '<br/><br/>
+	
+		Възможни модели:<br/>';
+	
+	
+		foreach ($params["possibleModels"] as $model) {
+			$body .= "- ".$model["model"];
+			if ($model["value"][0] === 2) {
+				$body .= " + прерязване по широчина";
+			}
+			if ($model["value"][1] === 2) {
+				$body .= " + прерязване по височина";
+			}
+			$body .= '<br/>';
+		}
+	
+		// error_log(print_r($body,true));
+		wp_mail('office@delice.bg', $subject, $body, $headers);
+		wp_mail('ambedorn@gmail.com', $subject, $body, $headers);
+	
+		return new WP_REST_Response( '', 200 );
+	}
+	
 	function generate_name($prefix) {
 		$chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 		return $prefix.substr(str_shuffle($chars), 0, 10);
 	}
 
+	function ss_delice_calculator() {
+		wp_enqueue_script('react');
+		wp_enqueue_script('react-dom');
+		wp_enqueue_script('react-commons');
+		wp_enqueue_script('calculator');
+	
+		return '<div id="delice-renomatic-calculator" ></div>';
+	}
+	
 	function single_prod_render() {
+		wp_enqueue_script('react');
+		wp_enqueue_script('react-dom');
+		wp_enqueue_script('react-commons');
+		wp_enqueue_script('single-product');
+
 		global $product;
 		$re_data;
 
@@ -171,26 +267,25 @@ class ReactElements {
 			$re_data['simple_prod_reg_price'] = $product->get_regular_price();
 			$re_data['simple_prod_price'] = $product->get_price();
 		}
+		if (in_array($product->get_id(), [3565,3566])) {
+			$re_data['link_to_calc'] = true;
+			$re_data['calculator_link'] = do_shortcode('[ss_button text="Към калкулатор" link="page:5132" align="right"]');
+		}
 		
-		echo '<div id="single-product-render"><img class="site-preloader" src="https://demos.supersait.bg/delice/wp-content/themes/delice/dist/img/preload.png" /></div>';
-		wp_localize_script( 'react-elements', 're_data', $re_data );	
+		wp_localize_script( 'single-product', 're_data', $re_data );	
+		echo '<div id="single-product-render"><img class="site-preloader" src="https://delice.bg/wp-content/themes/delice/dist/img/preload.png" /></div>';
 	}
 
 	function ss_logos_canvas() {
 		return '<div class="delice-partners"></div>';
 	}
 
-	function ss_delice_calculator() {
-		$re_data;
-		$el_id = $this->generate_name('re_calc_');
-
-		// wp_localize_script( 'react-elements', 're_sp_data', $gen_data );
-		wp_localize_script( 'react-elements', $el_id, $re_data );
-
-		return '<div id="'.$el_id.'" class="react-element-renomatic-calculator"></div>';
-	}
-
 	function sc_show_products($attr) {
+		wp_enqueue_script('react');
+		wp_enqueue_script('react-dom');
+		wp_enqueue_script('react-commons');
+		wp_enqueue_script('show-products');
+
 		$attr = shortcode_atts(array(
 			'ssprodids' => '',
 			'cat_ids' => '',
@@ -216,13 +311,18 @@ class ReactElements {
 		}
 		$re_data['attr'] = array('presentational' => $attr['ssprod_present']);
 
-		wp_localize_script( 'react-elements', 're_sp_data', $gen_data );
-		wp_localize_script( 'react-elements', $el_id, $re_data );
+		wp_localize_script( 'show-products', 're_sp_data', $gen_data );
+		wp_localize_script( 'show-products', $el_id, $re_data );
 
 		return '<div id="'.$el_id.'" class="react-element-show-products"></div>';
 	}
 
 	function sc_cat_re($attr) {
+		wp_enqueue_script('react');
+		wp_enqueue_script('react-dom');
+		wp_enqueue_script('react-commons');
+		wp_enqueue_script('cat-carousel');
+
 		$attr = shortcode_atts(array(
 			'catids' => '',
 			'title' => '',
@@ -245,8 +345,8 @@ class ReactElements {
 
 		$re_data = array_merge($re_data, $this->get_products_by_cat($catids, (int) $attr['product_count']));
 
-		wp_localize_script( 'react-elements', 're_cc_data', $gen_data );
-		wp_localize_script( 'react-elements', $el_id, $re_data );		
+		wp_localize_script( 'cat-carousel', 're_cc_data', $gen_data );
+		wp_localize_script( 'cat-carousel', $el_id, $re_data );		
 
 		return '<div id="'.$el_id.'" class="react-element-cat-carousel"></div>';
 	}
@@ -357,6 +457,18 @@ class ReactElements {
 				)
 			)
 		));
+
+		vc_map( array(
+			'name' => 'Delice Renomatic Calculator',
+			'base' => 'delice_calculator',
+			'icon' => 'icon-heart',
+			'group' => 'SS',
+			'category' => 'SS',
+			'params' => array(
+	
+			)
+		));
+
 		if (class_exists('Vc_Vendor_Woocommerce')) {
 			$vc_vendor_wc = new Vc_Vendor_Woocommerce();
 			add_filter( 'vc_autocomplete_ssproducts_ssprodids_callback', array($vc_vendor_wc,'productIdAutocompleteSuggester'), 10, 1 );

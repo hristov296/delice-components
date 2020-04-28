@@ -24,7 +24,7 @@ class ProductTabs extends Component {
 
   componentDidMount() {
     if (this.props.tabs.prod_gallery) {
-      const psItems = this.props.tabs.prod_gallery.map(el => ({
+      const psItems = this.props.tabs.prod_gallery.map((el) => ({
         src: el.url,
         w: el.width,
         h: el.height,
@@ -54,7 +54,7 @@ class ProductTabs extends Component {
 
   initVc = () => {
     if (typeof window.vc_js === "function")
-      window.jQuery(document).ready(function() {
+      window.jQuery(document).ready(function () {
         window.vc_js();
       });
   };
@@ -82,7 +82,7 @@ class ProductTabs extends Component {
       prod_gallery: "Галерия",
     };
 
-    Object.keys(currentTabs).forEach(el => {
+    Object.keys(currentTabs).forEach((el) => {
       if (!tabs[el]) {
         delete currentTabs[el];
       }
@@ -93,6 +93,7 @@ class ProductTabs extends Component {
     if (currentTabs.hasOwnProperty("prod_desc")) {
       jsxTabs.push(
         <div
+          key="prod_desc"
           hidden={currentTab !== "prod_desc"}
           className="product-tab-content prod_desc"
           dangerouslySetInnerHTML={{ __html: prod_desc }}
@@ -103,6 +104,7 @@ class ProductTabs extends Component {
     if (currentTabs.hasOwnProperty("prod_dimensions")) {
       jsxTabs.push(
         <div
+          key="prod_dimensions"
           hidden={currentTab !== "prod_dimensions"}
           className="product-tab-content prod_dimensions"
           dangerouslySetInnerHTML={{ __html: prod_dimensions }}
@@ -112,10 +114,13 @@ class ProductTabs extends Component {
 
     if (currentTabs.hasOwnProperty("prod_details")) {
       jsxTabs.push(
-        <div hidden={currentTab !== "prod_details"} className="product-tab-content prod_details">
+        <div
+          key="prod_details"
+          hidden={currentTab !== "prod_details"}
+          className="product-tab-content prod_details">
           <div className="prod-details-table">
-            {prod_details.map(el => (
-              <div className="prod-details-row">
+            {prod_details.map((el, i) => (
+              <div key={i} className="prod-details-row">
                 <div className="prod-details-name">{el.name}</div>
                 <div className="prod-details-value">{el.value}</div>
               </div>
@@ -127,7 +132,10 @@ class ProductTabs extends Component {
 
     if (currentTabs.hasOwnProperty("prod_info")) {
       jsxTabs.push(
-        <div hidden={currentTab !== "prod_info"} className="product-tab-content prod_info">
+        <div
+          key="prod_info"
+          hidden={currentTab !== "prod_info"}
+          className="product-tab-content prod_info">
           {prod_info}
         </div>
       );
@@ -135,10 +143,13 @@ class ProductTabs extends Component {
 
     if (currentTabs.hasOwnProperty("prod_files")) {
       jsxTabs.push(
-        <div hidden={currentTab !== "prod_files"} className="product-tab-content prod_files">
-          {prod_files.map(el =>
+        <div
+          key="prod_files"
+          hidden={currentTab !== "prod_files"}
+          className="product-tab-content prod_files">
+          {prod_files.map((el, i) =>
             el ? (
-              <div className="prod-file">
+              <div key={i} className="prod-file">
                 <a href={el.product_file.url} target="_blank">
                   <img src={el.product_file.icon} />
                   <span>
@@ -157,10 +168,13 @@ class ProductTabs extends Component {
 
     if (currentTabs.hasOwnProperty("prod_video")) {
       jsxTabs.push(
-        <div hidden={currentTab !== "prod_video"} className="product-tab-content prod_video">
-          {prod_video.map(el =>
+        <div
+          key="prod_video"
+          hidden={currentTab !== "prod_video"}
+          className="product-tab-content prod_video">
+          {prod_video.map((el, i) =>
             el.product_video_url !== "" ? (
-              <div dangerouslySetInnerHTML={{ __html: el.product_video_url }} />
+              <div key={i} dangerouslySetInnerHTML={{ __html: el.product_video_url }} />
             ) : (
               ""
             )
@@ -171,14 +185,17 @@ class ProductTabs extends Component {
 
     if (currentTabs.hasOwnProperty("prod_gallery")) {
       jsxTabs.push(
-        <div hidden={currentTab !== "prod_gallery"} className="product-tab-content prod_gallery">
+        <div
+          key="prod_gallery"
+          hidden={currentTab !== "prod_gallery"}
+          className="product-tab-content prod_gallery">
           {prod_gallery.map((el, i) => (
             <img
               key={`imagePs${i}`}
               width={el.sizes["medium-width"]}
               height={el.sizes["medium-height"]}
               src={el.sizes["medium"]}
-              onClick={e => this.psClick(e, i)}
+              onClick={(e) => this.psClick(e, i)}
             />
           ))}
           <PhotoSwipe

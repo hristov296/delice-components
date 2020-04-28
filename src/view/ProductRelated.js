@@ -3,7 +3,7 @@ import classnames from "classnames";
 
 import ProductBox from "./ProductBox";
 
-export default function(props) {
+export default function (props) {
   return (
     <div className="product-related">
       <div className="prod-tabs">
@@ -12,7 +12,7 @@ export default function(props) {
         </div>
       </div>
 
-      <div class="related-wrap bg-pattern">
+      <div className="related-wrap bg-pattern">
         <div className="container">
           <div className="product-tab-content prod_related delice-products">
             {props.prods.map((el, i) => (

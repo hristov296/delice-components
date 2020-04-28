@@ -11,8 +11,8 @@ function VariableProductGallery(props) {
 
   return (
     <div className="prod-gallery">
-      <div class="prod-gallery-view">
-        <figure class="prod-gallery-fig">
+      <div className="prod-gallery-view">
+        <figure className="prod-gallery-fig">
           {data.thumbnail ? (
             <img
               className="prod-thumbnail"
@@ -24,8 +24,9 @@ function VariableProductGallery(props) {
             ""
           )}
           {data.attr_data
-            ? Object.entries(data.attr_data.pa_color).map(el => (
+            ? Object.entries(data.attr_data.pa_color).map((el, i) => (
                 <img
+                  key={i}
                   className={classnames("prod-col-img", { active: props.currentCol === el[0] })}
                   src={el[1].image_full[0]}
                   width={el[1].image_full[1]}
@@ -34,8 +35,9 @@ function VariableProductGallery(props) {
               ))
             : ""}
           {data.attr_data
-            ? Object.entries(data.attr_data.pa_surface).map(el => (
+            ? Object.entries(data.attr_data.pa_surface).map((el, i) => (
                 <img
+                  key={i}
                   className={classnames("prod-surf-img", { active: props.currentSurf === el[0] })}
                   src={el[1].image_full[0]}
                   width={el[1].image_full[1]}

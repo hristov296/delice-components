@@ -13,12 +13,12 @@ function VariableProductGallery(props) {
 
   const { thumbImgs } = props;
 
-  const carItems = thumbImgs.map(el => ({
+  const carItems = thumbImgs.map((el) => ({
     src: el.thumb_size[0],
     w: el.thumb_size[1],
     h: el.thumb_size[2],
   }));
-  const psItems = thumbImgs.map(el => ({
+  const psItems = thumbImgs.map((el) => ({
     src: el.full_size[0],
     w: el.full_size[1],
     h: el.full_size[2],
@@ -26,8 +26,8 @@ function VariableProductGallery(props) {
 
   return (
     <div className="prod-gallery">
-      <div class="prod-gallery-view">
-        <figure class="prod-gallery-fig">
+      <div className="prod-gallery-view">
+        <figure className="prod-gallery-fig">
           <img
             onClick={() => (updatePSOptions({ index: currentImg }), handlePSState(true))}
             className="prod-thumbnail"

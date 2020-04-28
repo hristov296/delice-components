@@ -29,7 +29,7 @@ function VariableAttributes(props) {
                 {props.currentSurf ? (
                   props.attr_data.pa_surface[props.currentSurf].name
                 ) : (
-                  <span class="it-text">Изберете повърхност</span>
+                  <span className="it-text">Изберете повърхност</span>
                 )}
               </p>
             </CSSTransition>
@@ -37,8 +37,9 @@ function VariableAttributes(props) {
           <ul className="attr-list">
             {props.possibleSurf.map((el, i) => (
               <li
+                key={i}
                 className={classnames("attr-item", { active: el === props.currentSurf })}
-                onClick={e => props.onClickAttr(el, "currentSurf")}>
+                onClick={(e) => props.onClickAttr(el, "currentSurf")}>
                 <img
                   src={props.attr_data.pa_surface[el].image_thumb[0]}
                   width={props.attr_data.pa_surface[el].image_thumb[1]}
@@ -58,19 +59,20 @@ function VariableAttributes(props) {
                 {props.currentCol ? (
                   props.attr_data.pa_color[props.currentCol].name
                 ) : (
-                  <span class="it-text">Изберете цвят</span>
+                  <span className="it-text">Изберете цвят</span>
                 )}
               </p>
             </CSSTransition>
           </TransitionGroup>
           <ul className="attr-list">
-            {Object.entries(props.attr_data.pa_color).map(el => (
+            {Object.entries(props.attr_data.pa_color).map((el, i) => (
               <li
+                key={i}
                 className={classnames("attr-item", {
                   active: el[0] === props.currentCol,
                   hidden: props.possibleCol.indexOf(el[0]) === -1,
                 })}
-                onClick={e => props.onClickAttr(el[0], "currentCol")}>
+                onClick={(e) => props.onClickAttr(el[0], "currentCol")}>
                 <img
                   src={el[1].image_thumb[0]}
                   width={el[1].image_thumb[1]}
