@@ -14,8 +14,11 @@ export const calcTitle = css`
   font-size: 38px;
   color: #394a63;
   margin: 0 0 25px;
-  @media (max-width: 400px) {
+  @media (max-width: 768px) {
     font-size: 30px;
+  }
+  @media (max-width: 460px) {
+    font-size: 23px;
   }
 `;
 export const labelTitle = css`
@@ -26,14 +29,14 @@ export const labelTitle = css`
   margin-left: 8px;
   margin-bottom: 0 !important;
   color: #394a63;
-  @media (max-width: 400px) {
+  @media (max-width: 460px) {
     margin-left: 0;
     margin-top: 3px;
   }
 `;
 export const dTitle = css`
   margin-bottom: 15px;
-  @media (max-width: 400px) {
+  @media (max-width: 460px) {
     flex-flow: column;
     align-items: flex-start;
   }
@@ -265,7 +268,7 @@ export const notice = css`
 `;
 export const schemeImg = css`
   margin: 0 15px 15px;
-  @media (max-width: 400px) {
+  @media (max-width: 460px) {
     margin: 0 0 15px;
     width: 100%;
   }

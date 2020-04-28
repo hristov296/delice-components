@@ -527,7 +527,7 @@ export default () => {
               {endState.horCut ? (
                 <p css={addPrices}>
                   <span>- Прерязване по широчина</span>
-                  <span>+ 60лв.</span>
+                  <span css={{ minWidth: "67px" }}>+ 60лв.</span>
                 </p>
               ) : (
                 ""
@@ -535,7 +535,7 @@ export default () => {
               {endState.verCut ? (
                 <p css={addPrices}>
                   <span>- Прерязване по височина</span>
-                  <span>+ 60лв.</span>
+                  <span css={{ minWidth: "67px" }}>+ 60лв.</span>
                 </p>
               ) : (
                 ""
@@ -543,7 +543,7 @@ export default () => {
               {dOpening !== "default" ? (
                 <p css={addPrices}>
                   <span>- {openingData[dOpening][0]}</span>
-                  <span>+ {openingData[dOpening][1]}лв.</span>
+                  <span css={{ minWidth: "67px" }}>+ {openingData[dOpening][1]}лв.</span>
                 </p>
               ) : (
                 ""
@@ -551,7 +551,7 @@ export default () => {
               {dRemote !== "default" ? (
                 <p css={addPrices}>
                   <span>{`- ${dRemote.substr(3)} бр. допълнително дистанционно HSE4 BiSecur`}</span>
-                  <span>+ {dRemote.substr(3) * 90}лв.</span>
+                  <span css={{ minWidth: "67px" }}>+ {dRemote.substr(3) * 90}лв.</span>
                 </p>
               ) : (
                 ""
