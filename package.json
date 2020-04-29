@@ -8,7 +8,8 @@
     "clean": "rm -rf dist",
     "develop": "webpack --env dev --watch --progress --profile --colors",
     "build": "webpack --env prod --progress --profile --colors",
-    "upload": "rsync -avz --prune-empty-dirs --include=\"*/\" --include=\"*.php\" --include=\"/dist/*\" --exclude=\"*\" . delicebg@delice:/home/delicebg/public_html/wp-content/plugins/react-components/"
+    "upload": "rsync -avz --prune-empty-dirs --include=\"*/\" --include=\"*.php\" --include=\"/dist/*\" --exclude=\"*\" . delicebg@delice:/home/delicebg/public_html/wp-content/plugins/react-components/",
+    "deploy": "npm run clean && npm run build && npm run upload"
   },
   "keywords": [],
   "author": "",
