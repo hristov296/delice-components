@@ -65,7 +65,10 @@ export default React.forwardRef((props, selectRef) => {
         className={customClassname}
         role="presentantion"
         css={{ position: "relative", cursor: "pointer" }}>
-        <div onClick={() => toggleSelect(showSelect)} css={[inputMain, flexCenter]}>
+        <div
+          onClick={() => toggleSelect(showSelect)}
+          css={[inputMain, flexCenter]}
+          className="cselect-active">
           <OptionComponent
             value={selectEntries[selectValue] ? selectEntries[selectValue] : selectEntries.default}
             isDefault={selectValue === "default" || !selectEntries[selectValue]}
@@ -74,7 +77,7 @@ export default React.forwardRef((props, selectRef) => {
             <use xlinkHref="#ch-down" />
           </svg>
         </div>
-        <div className={classnames({ active: showSelect })} css={cselectList}>
+        <div className={classnames("cselect-list", { active: showSelect })} css={cselectList}>
           {Object.entries(selectEntries)
             .slice(sliceFrom)
             .map((el, i) => {
@@ -85,7 +88,7 @@ export default React.forwardRef((props, selectRef) => {
                   key={i}
                   onClick={() => cselectClick(el[0], isDisabled)}
                   css={[cselectOption, flexCenter]}
-                  className={classnames({ disabled: isDisabled })}>
+                  className={classnames("cselect-item", { disabled: isDisabled })}>
                   <OptionComponent value={el[1]} />
                 </div>
               );

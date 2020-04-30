@@ -49,6 +49,42 @@ export const gridContainer = (props) => css`
     grid-template-columns: 1fr;
   }
 `;
+export const designColorRow = css`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 15px;
+  .cselect-active,
+  .cselect-item {
+    height: 60px;
+    line-height: 60px;
+    span {
+      font-size: 16px;
+      height: 44px;
+      line-height: 44px;
+    }
+  }
+  .cselect-item {
+    padding: 5px 10px;
+  }
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+  @media (max-width: 450px) {
+    .cselect-active,
+    .cselect-item {
+      height: 60px;
+      line-height: 60px;
+      span {
+        font-size: 13px;
+        height: 34px;
+        line-height: 34px;
+      }
+    }
+    .cselect-item {
+      padding: 5px;
+    }
+  }
+`;
 export const endBox = css`
   display: flex;
   position: relative;
@@ -76,16 +112,27 @@ export const textareaMain = css`
   height: 100px;
   line-height: 1;
   padding: 8px;
+  grid-column: -1/-3;
+  grid-row: 1 / span 2;
+  @media (max-width: 1024px) {
+    grid-row: auto;
+    grid-column: -1/1;
+  }
 `;
 export const gridFullRow = css`
   grid-column: -1/1;
 `;
 export const colorsImg = css`
   border-radius: 5px;
-  width: 28px;
-  height: 28px;
+  width: 50px;
+  height: 50px;
   object-fit: cover;
-  margin-right: 5px;
+  margin-right: 15px;
+  /* @media (max-width: 450px) {
+    width: 40px;
+    height: 40px;
+    margin-right: 5px;
+  } */
 `;
 export const colorsTitle = css`
   border-radius: 10px;
@@ -146,6 +193,10 @@ export const inputMain = css`
     font-size: 14px;
     padding: 0 5px;
   }
+`;
+export const inputBorderColor = (props) => css`
+  box-shadow: ${props.disabled ? `0 0 10px rgba(186, 29, 12, 0.59)` : ``};
+  border-color: ${props.disabled ? `rgba(186, 29, 12, 0.59)` : `#eef1f4`};
 `;
 export const flexCenter = css`
   display: flex;

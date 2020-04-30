@@ -10,6 +10,7 @@ import {
   labelTitle,
   gridContainer,
   inputMain,
+  inputBorderColor,
   textareaMain,
   gridFullRow,
   colorsImg,
@@ -32,6 +33,7 @@ import {
   endImgContainer,
   endTitleBox,
   endButtonBox,
+  designColorRow,
 } from "./Components";
 
 import {
@@ -74,7 +76,7 @@ const MeasureInput = React.memo(({ label, id, onChange }) => (
 const ColorsSelectOption = React.memo((props) =>
   !props.isDefault && props.value ? (
     <>
-      <img width="28px" height="28px" css={colorsImg} src={props.value[1]} alt={props.value[0]} />
+      <img width="50px" height="50px" css={colorsImg} src={props.value[1]} alt={props.value[0]} />
       <span css={colorsTitle}>{props.value[0]}</span>
     </>
   ) : (
@@ -165,6 +167,7 @@ export default () => {
   const [dModels, setDModels] = useState("default");
   const [loading, setLoading] = useState(false);
   const [formNotice, setFormNotice] = useState(false);
+  const [errorFields, setErrors] = useState([]);
   const linesSelectRef = useRef();
   const colorSelectRef = useRef();
   const openingSelectRef = useRef();
@@ -199,6 +202,11 @@ export default () => {
       }, 100);
     }, 900);
   };
+
+  const onInputChange = (e) => {
+    setErrors(errorFields.filter((el) => el !== e.target.name.substr(5)));
+  };
+  // console.log(errorFields);
 
   useEffect(() => {
     if (!Object.values(state).filter((el) => el === "").length) {
@@ -280,24 +288,27 @@ export default () => {
   const sendForm = (e) => {
     e.preventDefault();
     setFormNotice(false);
-    if (
-      [dLines, dColors].find((el) => el === "default") ||
-      ["name", "email", "city", "phone", "message"].find(
-        (el) => formRef.current.elements.namedItem("form-" + el).value === ""
-      )
-    ) {
+    setErrors([]);
+    const errorFields = ["name", "email", "city", "phone", "message"].filter(
+      (el) => formRef.current.elements.namedItem("form-" + el).value === ""
+    );
+
+    if ([dLines, dColors].find((el) => el === "default") || errorFields.length) {
+      setErrors(errorFields);
       setFormNotice("Моля, попълнете всички полета");
       return;
     }
 
     const currEmail = formRef.current.elements.namedItem("form-email").value;
     if (!/^[a-zA-Z][a-zA-Z0-9._-]*@[a-zA-Z0-9]+\.[a-zA-Z]+/.test(currEmail)) {
+      setErrors(["email", ...errorFields]);
       setFormNotice("Неправилен имейл адрес");
       return;
     }
 
     const currPhone = formRef.current.elements.namedItem("form-phone").value;
     if (!/[+0-9]{5,}/.test(currPhone)) {
+      setErrors(["phone", ...errorFields]);
       setFormNotice("Неправилен телефонен номер");
       return;
     }
@@ -357,67 +368,63 @@ export default () => {
           <div className="double-top-lines" />
           <h3 css={calcTitle}>Подайте запитване за цена</h3>
           <div css={gridContainer({ gap: 30, min: 500 })}>
-            <div>
+            <div css={gridFullRow}>
               <DelTitle title="Данни за контакт" />
-              <div css={gridContainer({ gap: 15, min: 250 })}>
-                <input css={inputMain} type="text" placeholder="Име:*" id="form-name" name="form-name" />
+              <div
+                css={[
+                  gridContainer({ gap: 15, min: 225 }),
+                  {
+                    "@media (max-width: 1024px)": {
+                      gridTemplateColumns: "1fr 1fr",
+                    },
+                    "@media (max-width: 550px)": {
+                      gridTemplateColumns: "1fr",
+                    },
+                  },
+                ]}>
                 <input
-                  css={inputMain}
+                  css={[inputMain, inputBorderColor({ disabled: errorFields.indexOf("name") > -1 })]}
+                  type="text"
+                  placeholder="Име:*"
+                  onChange={onInputChange}
+                  id="form-name"
+                  name="form-name"
+                />
+                <input
+                  css={[inputMain, inputBorderColor({ disabled: errorFields.indexOf("city") > -1 })]}
                   type="text"
                   placeholder="Град:*"
+                  onChange={onInputChange}
                   id="form-city"
                   name="form-city"
                 />
                 <input
-                  css={inputMain}
+                  css={[inputMain, inputBorderColor({ disabled: errorFields.indexOf("phone") > -1 })]}
                   type="tel"
                   placeholder="Телефон:*"
+                  onChange={onInputChange}
                   id="form-phone"
                   name="form-phone"
                 />
                 <input
-                  css={inputMain}
+                  css={[inputMain, inputBorderColor({ disabled: errorFields.indexOf("email") > -1 })]}
                   type="email"
                   placeholder="Имейл:*"
+                  onChange={onInputChange}
                   id="form-email"
                   name="form-email"
                 />
                 <textarea
-                  css={[inputMain, textareaMain, gridFullRow]}
+                  css={[
+                    inputMain,
+                    inputBorderColor({ disabled: errorFields.indexOf("message") > -1 }),
+                    textareaMain,
+                  ]}
                   placeholder="Съобщение:*"
+                  onChange={onInputChange}
                   id="form-message"
                   name="form-message"
                 />
-              </div>
-            </div>
-            <div>
-              <DelTitle title="Моля, изберете дизайн и цвят" />
-              <div css={gridContainer({ gap: 15, min: 250 })}>
-                <div>
-                  <CustomSelect
-                    ref={colorSelectRef}
-                    customClassname="cselect-colors"
-                    selectEntries={linesSelect}
-                    sliceFrom={1}
-                    selectValue={dLines}
-                    setSelectValue={setDLines}
-                  />
-                </div>
-                <div>
-                  <CustomSelect
-                    ref={linesSelectRef}
-                    customClassname="cselect-lines"
-                    selectEntries={colorsSelect[dLines]}
-                    sliceFrom={1}
-                    selectValue={dColors}
-                    setSelectValue={setDColors}
-                    OptionComponent={ColorsSelectOption}
-                    optionEntries={Object.assign(
-                      {},
-                      ...Object.keys(colorsSelect).map((key) => ({ [key]: colorsSelect[key][0] }))
-                    )}
-                  />
-                </div>
               </div>
             </div>
             <div css={gridFullRow}>
@@ -497,6 +504,36 @@ export default () => {
                     availableEntries={endState.possibleModels}
                     selectValue={dModels}
                     setSelectValue={setDModels}
+                  />
+                </div>
+              </div>
+            </div>
+            <div css={gridFullRow}>
+              <DelTitle title="Моля, изберете дизайн и цвят" />
+              <div css={designColorRow}>
+                <div>
+                  <CustomSelect
+                    ref={colorSelectRef}
+                    customClassname="cselect-colors"
+                    selectEntries={linesSelect}
+                    sliceFrom={1}
+                    selectValue={dLines}
+                    setSelectValue={setDLines}
+                  />
+                </div>
+                <div>
+                  <CustomSelect
+                    ref={linesSelectRef}
+                    customClassname="cselect-lines"
+                    selectEntries={colorsSelect[dLines]}
+                    sliceFrom={1}
+                    selectValue={dColors}
+                    setSelectValue={setDColors}
+                    OptionComponent={ColorsSelectOption}
+                    optionEntries={Object.assign(
+                      {},
+                      ...Object.keys(colorsSelect).map((key) => ({ [key]: colorsSelect[key][0] }))
+                    )}
                   />
                 </div>
               </div>
